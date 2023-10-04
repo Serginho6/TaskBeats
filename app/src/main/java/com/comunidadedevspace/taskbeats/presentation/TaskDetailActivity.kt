@@ -59,9 +59,9 @@ class TaskDetailActivity : AppCompatActivity() {
 
             if(title.isNotEmpty() && desc.isNotEmpty()){
                 if(task == null) {
-                    addOrUpdateTask(0, title, desc, ActionType.CREATE)
+                    addOrUpdateTask(0, title, desc, isSelected = false, ActionType.CREATE)
                 }else{
-                    addOrUpdateTask(task!!.id, title, desc, ActionType.UPDATE)
+                    addOrUpdateTask(task!!.id, title, desc, isSelected = false, ActionType.UPDATE)
                 }
             }else{
                 showMessage(it, "Fields are required")
@@ -73,9 +73,10 @@ class TaskDetailActivity : AppCompatActivity() {
         id: Int,
         title:String,
         description:String,
+        isSelected:Boolean,
         actionType: ActionType
     ){
-        val task = Task(id, title, description)
+        val task = Task(id, title, description, isSelected)
         performAction(task, actionType)
     }
 
