@@ -1,7 +1,10 @@
 package com.comunidadedevspace.taskbeats.presentation
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +18,19 @@ import com.comunidadedevspace.taskbeats.R
 import com.comunidadedevspace.taskbeats.data.local.Task
 
 class TaskListAdapter(
+    private val context: Context,
     private val openTaskDetailView:(task: Task) -> Unit
 ) : ListAdapter<Task, TaskListViewHolder>(TaskListAdapter) {
+
+    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val checkedExercisesSet: MutableSet<String> = mutableSetOf()
+
+    init {
+        val checkedExercises = sharedPreferences.getStringSet("checkedExercises", mutableSetOf())
+        if (checkedExercises != null) {
+            checkedExercisesSet.addAll(checkedExercises)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListViewHolder {
         val view: View = LayoutInflater
@@ -30,11 +44,23 @@ class TaskListAdapter(
         val task = getItem(position)
         holder.bind(task, openTaskDetailView)
 
+        holder.checkTask.setOnCheckedChangeListener(null)
+
+        holder.checkTask.isChecked = checkedExercisesSet.contains(task.title)
+
         holder.checkTask.setOnCheckedChangeListener { _, isChecked ->
-            task.isSelected = isChecked
+            if (isChecked) {
+                checkedExercisesSet.add(task.title)
+            } else {
+                checkedExercisesSet.remove(task.title)
+            }
+
+            sharedPreferences.edit().putStringSet("checkedExercises", checkedExercisesSet).apply()
+
             holder.updateTaskAppearance(holder, isChecked)
         }
-        holder.updateTaskAppearance(holder, task.isSelected)
+
+        holder.updateTaskAppearance(holder, holder.checkTask.isChecked)
     }
 
     companion object : DiffUtil.ItemCallback<Task>(){

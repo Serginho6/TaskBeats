@@ -24,7 +24,7 @@ class TaskListFragment : Fragment() {
 
     //Adapter
     private val adapter: TaskListAdapter by lazy {
-        TaskListAdapter(::openTaskListDetail)
+        TaskListAdapter(requireContext(), ::openTaskListDetail)
     }
 
     private val viewModel: TaskListViewModel by lazy {
