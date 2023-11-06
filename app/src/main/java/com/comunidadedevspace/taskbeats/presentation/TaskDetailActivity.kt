@@ -57,14 +57,14 @@ class TaskDetailActivity : AppCompatActivity() {
             val title = edtTitle.text.toString()
             val desc = edtDescription.text.toString()
 
-            if(title.isNotEmpty() && desc.isNotEmpty()){
+            if(title.isNotEmpty()){
                 if(task == null) {
                     addOrUpdateTask(0, title, desc, isSelected = false, ActionType.CREATE)
                 }else{
                     addOrUpdateTask(task!!.id, title, desc, isSelected = false, ActionType.UPDATE)
                 }
             }else{
-                showMessage(it, "Fields are required")
+                showMessage(it, "Tarefa precisa de um título")
             }
         }
     }
@@ -93,7 +93,7 @@ class TaskDetailActivity : AppCompatActivity() {
                 if(task != null){
                     performAction(task!!, ActionType.DELETE)
                 }else{
-                    showMessage(btnDone, "Item not found")
+                    showMessage(btnDone, "Item não encontrado")
                 }
 
                 true
